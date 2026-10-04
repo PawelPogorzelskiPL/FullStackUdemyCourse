@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>D&D 5e API Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Titan+One&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+  </head>
+  <body>
+    <h1 class="text-center">
+      Dungeons & Dragons 5e Monsters and Spells Explorer
+    </h1>
+    <h2 class="text-center">Select a category you want to explore:</h2>
+    <div class="text-center">
+      <form id="category-selector" method="POST">
+        <input id="get" type="submit" value="MONSTERS" formaction="/get-monsters" />
+        <input id="get" type="submit" value="SPELLS" formaction="/get-spells" />
+      </form>
+    </div>
+    <h2 class="text-center">Or pick a random monster:</h2>
+    <div class="text-center">
+      <form id="random-selector" method="POST">
+        <input
+          id="get"
+          type="submit"
+          value="RANDOM MONSTER"
+          formaction="/get-random-monster"
+        />
+      </form>
+    </div>
+    <% if (monsters && monsters.length > 0) { %>
+      <h3 class="text-center">Select a monster:</h3>
+      <div class="text-center">
+        <form id="type-selector" method="POST">
+          <select name="type" id="type-select">
+            <% monsters.forEach(function (monster) { %>
+              <% if (selectedMonster && selectedMonster === monster.url) { %>
+                <option value="<%= monster.url %>" selected><%= monster.name %></option>
+              <% } else { %>
+                <option value="<%= monster.url %>"><%= monster.name %></option>
+              <% } %>
+            <% }); %>
+          </select>
+          <input
+            id="get"
+            type="submit"
+            value="GET MONSTER DETAILS"
+            formaction="/get-monster-details"
+          />
+        </form>
+      </div>
+    <% } %>
+        <% if (details && (details.monsterDetails || details.randomMonster)) { %>
+          <h3 class="text-center">Monster Details:</h3>
+          <div class="text-center">
+            <ul class="monster-details">
+              <li><strong>Name:</strong> <%= (details.monsterDetails || details.randomMonster).name %></li>
+              <li><strong>Size:</strong> <%= (details.monsterDetails || details.randomMonster).size %></li>
+              <li><strong>Type:</strong> <%= (details.monsterDetails || details.randomMonster).type %></li>
+              <li><strong>XP:</strong> <%= (details.monsterDetails || details.randomMonster).xp %></li>
+              <li><strong>Strength:</strong> <%= (details.monsterDetails || details.randomMonster).strength %></li>
+              <li><strong>Dexterity:</strong> <%= (details.monsterDetails || details.randomMonster).dexterity %></li>
+              <li><strong>Intelligence:</strong> <%= (details.monsterDetails || details.randomMonster).intelligence %></li>
+              <li><strong>Wisdom:</strong> <%= (details.monsterDetails || details.randomMonster).wisdom %></li>
+              <li><strong>Charisma:</strong> <%= (details.monsterDetails || details.randomMonster).charisma %></li>
+              <li><strong>Speed:</strong> 
+                <% for (const [key, value] of Object.entries((details.monsterDetails || details.randomMonster).speed)) { %>
+                  <%= key %>: <%= value %>, 
+                <% } %>
+              </li>
+            </ul>
+            <img src="https://www.dnd5eapi.co<%= (details.monsterDetails || details.randomMonster).image %>" alt="<%= (details.monsterDetails || details.randomMonster).name %>" />
+          </div>
+        <% } %>
+    
+    <% if (spells && spells.length > 0) { %>
+      <h3 class="text-center">Select a spell:</h3>
+      <div class="text-center">
+        <form id="type-selector" method="POST">
+          <select name="type" id="type-select">
+            <% spells.forEach(function (spell) { %>
+              <% if (selectedSpell && selectedSpell === spell.url) { %>
+                <option value="<%= spell.url %>" selected><%= spell.name %></option>
+              <% } else { %>
+                <option value="<%= spell.url %>"><%= spell.name %></option>
+              <% } %>
+            <% }); %>
+          </select>
+          <input
+            id="get"
+            type="submit"
+            value="GET SPELL DETAILS"
+            formaction="/get-spell-details"
+          />
+        </form>
+      </div>
+          <% if (details && details.spellDetails) { %>
+      <h3 class="text-center">Spell Details:</h3>
+      <div class="text-center">
+        <ul class="spell-details">
+          <li><strong>Name:</strong> <%= details.spellDetails.name %></li>
+          <li><strong>Description:</strong> <%= details.spellDetails.desc %></li>
+          <li><strong>Range:</strong> <%= details.spellDetails.range %></li>
+          <li><strong>Material:</strong> <%= details.spellDetails.material %></li>
+          <li><strong>Duration:</strong> <%= details.spellDetails.duration %></li>
+          <li><strong>Casting Time:</strong> <%= details.spellDetails.casting_time %></li>
+          <li><strong>Level:</strong> <%= details.spellDetails.level %></li>
+          <li><strong>School:</strong> <%= details.spellDetails.school.name %></li>
+          <li><strong>Classes:</strong> <ul>
+            <% details.spellDetails.classes.forEach(function (cls) { %>
+              <li><%= cls.name %></li>
+            <% }); %>
+          </ul></li>
+        </ul>
+      </div>
+    <% } %>
+    <% } %>
+
+  </body>
+</html>
